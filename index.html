@@ -1,0 +1,140 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<link href='https://taisukef.github.io/gsivectortile-3d-like-building/maplibre-gl.css' rel='stylesheet'>
+<title>GTFSmap</title>
+<style>
+body {
+  margin: 0;
+  padding: 0;
+}
+#map {
+  position: absolute;
+  top: 10%;
+  height: 90%;
+  width: 100%;
+}
+h1 {
+  font-size: 5vh;
+  margin: .2vh;
+  padding: 0;
+}
+.popup {
+  word-break: break-all;
+}
+</style>
+<script type="module">
+import { GTFS } from "https://taisukef.github.io/gtfs-map/GTFS.js";
+import { maplibregl } from "https://taisukef.github.io/maplibre-gl-js/maplibre-gl-es.js";
+import { sleep } from "https://js.sabae.cc/sleep.js";
+import { Geo3x3 } from "https://taisukef.github.io/Geo3x3/Geo3x3.mjs";
+
+onload = async () => {
+  const url_gtfs = "./gtfs_sabae.zip";
+  const url_gtfsrt = null;
+  const update_interval_sec = 15;
+  
+  // 地図表示 (MapLibre API: https://maplibre.org/maplibre-gl-js-docs/api/ )
+  const mapgl = maplibregl;
+  const map = new mapgl.Map({
+    container: "map",
+    hash: true,
+    style: 'https://taisukef.github.io/gsivectortile-3d-like-building/building3d.json',
+    zoom: 15,
+    minZoom: 4,
+    maxZoom: 17.99,
+    bearing: -40,
+    pitch: 60,
+  });
+
+  // GTFS取得とタイトル表示
+  const gtfs = await GTFS.fetch(url_gtfs);
+  console.log(gtfs);
+  title.textContent = "GTFSmap - " + gtfs.agency[0]?.agency_name;
+
+  // バス停表示
+  const lls = new mapgl.LngLatBounds();
+  for (const e of gtfs.stops) {
+    const ll = [e.stop_lon, e.stop_lat];
+    const marker = new mapgl.Marker({ color: "#ff9999" }).setLngLat(ll).addTo(map);
+    lls.extend(ll);
+
+    const geo3x3 = Geo3x3.encode(e.stop_lat, e.stop_lon, 20);
+
+    const popup = new mapgl.Popup({ className: "popup" })
+      .setLngLat(ll)
+      .setHTML(`<a href=${e.stop_url}>${e.stop_name}</a><br><a href=https://geo3x3.com/#${geo3x3}>${geo3x3}</a>`)
+      .setMaxWidth("300px");
+    marker.setPopup(popup);
+  }
+  map.fitBounds(lls);
+
+  // 路線を描画
+  const data = {
+    type: "FeatureCollection",
+    features: [
+      {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [136.184234, 35.956566],
+            [136.200841, 35.950170],
+          ]
+        }
+      }, {
+        type: 'Feature',
+        properties: {},
+        geometry: {
+          type: 'LineString',
+          coordinates: [
+            [136.184234 + .03, 35.956566],
+            [136.200841 + .03, 35.950170],
+          ]
+        }
+      },
+    ],
+  };
+  map.addSource('route', {
+    type: 'geojson',
+    data,
+  });
+  map.addLayer({
+    id: 'route',
+    type: 'line',
+    source: 'route',
+    layout: {
+      'line-join': 'round',
+      'line-cap': 'round'
+    },
+    paint: {
+      'line-color': '#888',
+      'line-width': 8
+    },
+  });
+
+  // update_interval_sec秒おきにGTFSrealtimeでバス情報の取得と表示
+  if (url_gtfsrt) {
+    for (;;) {
+      const feed = await GTFS.fetchRT(url_gtfsrt);
+      for (const e of feed.entity) {
+        const pos = e.vehicle.position;
+        const ll = [pos.longitude, pos.latitude];
+        const marker = new mapgl.Marker().setLngLat(ll).addTo(map);
+
+        const popup = new mapgl.Popup({ className: "popup" })
+          .setLngLat(ll)
+          .setHTML(JSON.stringify(e.vehicle))
+          .setMaxWidth("300px");
+        marker.setPopup(popup);
+      }
+      await sleep(update_interval_sec * 1000);
+    }
+  }
+};
+</script>
+</head>
+<body>
+<h1 id="title"></h1>
+<div id="map"></div>
+</body>
+</html>
