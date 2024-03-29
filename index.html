@@ -28,7 +28,7 @@ import { sleep } from "https://js.sabae.cc/sleep.js";
 import { Geo3x3 } from "https://taisukef.github.io/Geo3x3/Geo3x3.mjs";
 
 onload = async () => {
-  const url_gtfs = "./gtfs_sabae.zip";
+  const url_gtfs = "./test/gtfs_sabae.zip";
   const url_gtfsrt = null;
   const update_interval_sec = 15;
   
@@ -67,7 +67,7 @@ onload = async () => {
   }
   map.fitBounds(lls);
 
-  // 路線を描画
+  // ポリゴン描画テスト
   const data = {
     type: "FeatureCollection",
     features: [
