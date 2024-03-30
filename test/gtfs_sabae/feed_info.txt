@@ -1,0 +1,2 @@
+﻿feed_publisher_name,feed_publisher_url,feed_lang,feed_start_date,feed_end_date,feed_version,default_lang
+SabaeCityOffice,https://www.city.sabae.fukui.jp/users/tutujibus/GTFS/gtfs_sabae.zip,ja,20230401,20270331,2023v1,

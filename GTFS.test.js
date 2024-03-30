@@ -38,10 +38,9 @@ Deno.test("routes", () => {
   });
   */
 });
-Deno.test("geojson", () => {
-  const geojson = gtfs.getGeoJSON();
-  console.log(geojson);
-  //t.assertEquals(routes.length, 9);
+Deno.test("timetable", () => {
+  const tt = gtfs.getTimetable();
+  t.assertEquals(tt);
   /*
   t.assertEquals(routes[0], {
     agency_id: "1",
