@@ -17,4 +17,4 @@ console.log(gtfs.getRoutes());
 
 ## lib
 
-- [GTFS](https://github.com/taisukef/gtfs-map/)
+- [gtfs2json](https://github.com/taisukef/gtfs-map/)
