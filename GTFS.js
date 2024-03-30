@@ -29,7 +29,15 @@ export class GTFS {
     return this.gtfs.stops;
   }
   getStopNames() {
-    return ArrayUtil.toUnique(this.gtfs.stops.map(i => i.stop_name));
+    const names = ArrayUtil.toUnique(this.gtfs.stops.map(i => i.stop_name));
+    if (!this.gtfs.translations) return names;
+    const namekanas = names.map(name => {
+      const kana = this.gtfs.translations.find(i => i.field_name == name && i.language == "ja-Hrkt")?.translation || name;
+      //console.log(name, kana); // err! 神明公民館, 公立丹南病
+      return { name, kana };
+    });
+    namekanas.sort((a, b) => a.kana.localeCompare(b.kana));
+    return namekanas.map(i => i.name);
   }
   getRoutes() {
     return this.gtfs.routes;
