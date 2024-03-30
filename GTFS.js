@@ -1,5 +1,6 @@
 import { gtfs2json } from "https://taisukef.github.io/gtfs-map/gtfs2json.js";
 import { Time } from "https://js.sabae.cc/DateTime.js";
+import { ArrayUtil } from "https://js.sabae.cc/ArrayUtil.js";
 
 export class GTFS {
   constructor(gtfszipbin) {
@@ -26,6 +27,9 @@ export class GTFS {
   }
   getStops() {
     return this.gtfs.stops;
+  }
+  getStopNames() {
+    return ArrayUtil.toUnique(this.gtfs.stops.map(i => i.stop_name));
   }
   getRoutes() {
     return this.gtfs.routes;

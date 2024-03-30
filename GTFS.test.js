@@ -23,6 +23,11 @@ Deno.test("stops", () => {
     zone_id: "",
   });
 });
+Deno.test("stops", () => {
+  const stops = gtfs.getStopNames();
+  t.assertEquals(stops.length, 217);
+  //console.log(stops);
+});
 Deno.test("routes", () => {
   const routes = gtfs.getRoutes();
   t.assertEquals(routes.length, 9);
