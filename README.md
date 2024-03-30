@@ -8,12 +8,12 @@ A ES module for GTFS
 import { GTFS } from "https://code4fukui.github.io/GTFS/GTFS.js";
 import { fetchBin } from "https://js.sabae.cc/fetchBin.js";
 
-const gtfsbin = await fetchBin(url_gtfs);
+const url = "./test/gtfs_sabae.zip";
+const gtfsbin = await fetchBin(url);
 const gtfs = new GTFS(gtfsbin);
 console.log(gtfs.getAgencyName());
 console.log(gtfs.getRoutes());
 ```
-
 
 ## lib
 
