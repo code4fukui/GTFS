@@ -108,7 +108,7 @@ Deno.test("getNextTripTimes", () => {
   const fromst = "JR鯖江駅（１番のりば）";
   const tost = "福井高専";
   const ttimes = gtfs.getNextTripTimes(fromst, tost, 3, new Time("22:13"));
-  t.assertEquals(ttimes.length, 0);
+  t.assertEquals(ttimes.length, 3);
   const ttimes2 = gtfs.getNextTripTimes(fromst, tost, 10, new Time("07:01"));
-  t.assertEquals(ttimes2.length, 5);
+  t.assertEquals(ttimes2.length, 6);
 });

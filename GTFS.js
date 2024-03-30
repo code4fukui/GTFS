@@ -108,12 +108,14 @@ export class GTFS {
   getNextTripTimes(fromstop, tostop, maxlen = 3, nowm) {
     const trs = this.getTripTimes(fromstop, tostop);
     const now = (nowm || new Time()).quantizeMinutes().toMinutes();
-    const res = trs.filter(trip => {
+    trs.forEach(trip => {
       const fromt = new Time(trip.from);
-      const d = now - fromt.toMinutes();
-      return d <= 0;
+      let d = now - fromt.toMinutes();
+      if (d <= 0) d += 24 * 60;
+      trip.dt = d;
     });
-    if (res.length > maxlen) res.length = maxlen;
-    return res;
+    trs.sort((a, b) => a.dt - b.dt);
+    if (trs.length > maxlen) trs.length = maxlen;
+    return trs;
   }
 };
