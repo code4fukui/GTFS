@@ -114,7 +114,7 @@ export class GTFS {
       if (d <= 0) d += 24 * 60;
       trip.dt = d;
     });
-    trs.sort((a, b) => a.dt - b.dt);
+    trs.sort((a, b) => b.dt - a.dt);
     if (trs.length > maxlen) trs.length = maxlen;
     return trs;
   }
