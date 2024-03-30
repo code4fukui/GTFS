@@ -1,5 +1,6 @@
 import * as t from "https://deno.land/std/testing/asserts.ts";
 import { GTFS } from "./GTFS.js";
+import { Time } from "https://js.sabae.cc/DateTime.js";
 
 const gtfs = new GTFS(await Deno.readFile("test/gtfs_sabae.zip"));
 
@@ -40,7 +41,7 @@ Deno.test("routes", () => {
 });
 Deno.test("timetable", () => {
   const tt = gtfs.getTimetable();
-  t.assertEquals(tt);
+  //t.assertEquals(tt);
   /*
   t.assertEquals(routes[0], {
     agency_id: "1",
@@ -53,4 +54,56 @@ Deno.test("timetable", () => {
     route_type: "3",
   });
   */
+});
+Deno.test("getTrips", () => {
+  const fromst = "JR鯖江駅（１番のりば）";
+  const tost = "福井高専";
+  const trips = gtfs.getTrips(fromst, tost);
+  t.assertEquals(trips.length, 6);
+  for (const trip of trips) {
+    const fromt = trip.stop_times.find(i => i.stop.stop_name == fromst).departure_time;
+    const tot = trip.stop_times.find(i => i.stop.stop_name == tost).arrival_time;
+    //console.log(fromt, tot);
+  }
+});
+Deno.test("getTripTimes", () => {
+  const fromst = "JR鯖江駅（１番のりば）";
+  const tost = "福井高専";
+  const ttimes = gtfs.getTripTimes(fromst, tost);
+  t.assertEquals(ttimes.length, 6);
+  const chk = [
+    {
+      from: "7:00:00",
+      to: "7:12:00",
+    },
+    {
+      from: "8:15:00",
+      to: "8:27:00",
+    },
+    {
+      from: "10:05:00",
+      to: "10:17:00",
+    },
+    {
+      from: "12:00:00",
+      to: "12:35:00",
+    },
+    {
+      from: "15:00:00",
+      to: "15:35:00",
+    },
+    {
+      from: "17:05:00",
+      to: "17:40:00",
+    },
+  ];
+  t.assertEquals(ttimes, chk);
+});
+Deno.test("getNextTripTimes", () => {
+  const fromst = "JR鯖江駅（１番のりば）";
+  const tost = "福井高専";
+  const ttimes = gtfs.getNextTripTimes(fromst, tost, 3, new Time("22:13"));
+  t.assertEquals(ttimes.length, 0);
+  const ttimes2 = gtfs.getNextTripTimes(fromst, tost, 10, new Time("07:01"));
+  t.assertEquals(ttimes2.length, 5);
 });

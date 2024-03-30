@@ -1,4 +1,5 @@
 import { gtfs2json } from "https://taisukef.github.io/gtfs-map/gtfs2json.js";
+import { Time } from "https://js.sabae.cc/DateTime.js";
 
 export class GTFS {
   constructor(gtfszipbin) {
@@ -6,6 +7,9 @@ export class GTFS {
     
     for (const r of gtfs.routes) {
       r.trips = gtfs.trips.filter(i => i.route_id == r.route_id);
+      for (const t of r.trips) {
+        t.route = r;
+      }
     }
     for (const t of gtfs.trips) {
       if (gtfs.shapes) {
@@ -75,5 +79,37 @@ export class GTFS {
       }
     });
     return list;
+  }
+  getTrips(fromstop, tostop) { // must be same trip
+    const list = [];
+    if (fromstop == tostop) return list;
+    for (const route of this.gtfs.routes) {
+      for (const trip of route.trips) {
+        const nfrom = trip.stop_times.findIndex(i => i.stop.stop_name == fromstop);
+        if (nfrom < 0) continue;
+        const nto = trip.stop_times.findIndex(i => i.stop.stop_name == tostop);
+        if (nto < nfrom) continue;
+        list.push(trip);
+      }
+    }
+    return list;
+  }
+  getTripTimes(fromstop, tostop) {
+    return this.getTrips(fromstop, tostop).map(trip => {
+      const fromt = trip.stop_times.find(i => i.stop.stop_name == fromstop).departure_time;
+      const tot = trip.stop_times.find(i => i.stop.stop_name == tostop).arrival_time;
+      return { from: fromt, to: tot };
+    });
+  }
+  getNextTripTimes(fromstop, tostop, maxlen = 3, nowm) {
+    const trs = this.getTripTimes(fromstop, tostop);
+    const now = (nowm || new Time()).quantizeMinutes().toMinutes();
+    const res = trs.filter(trip => {
+      const fromt = new Time(trip.from);
+      const d = now - fromt.toMinutes();
+      return d <= 0;
+    });
+    if (res.length > maxlen) res.length = maxlen;
+    return res;
   }
 };
