@@ -18,3 +18,7 @@ console.log(gtfs.getRoutes());
 ## lib
 
 - [gtfs2json](https://github.com/taisukef/gtfs-map/)
+
+## License
+
+MIT License
