@@ -1,6 +1,8 @@
 # GTFS
 
-A ES module for GTFS
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
+A JavaScript module for handling GTFS (General Transit Feed Specification) open data.
 
 ## Usage
 

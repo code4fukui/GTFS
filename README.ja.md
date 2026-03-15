@@ -2,10 +2,6 @@
 
 GTFS (General Transit Feed Specification)形式のオープンデータを扱うためのJavaScriptモジュールです。
 
-## デモ
-zipファイルをドロップすると、地図上にバス停とルートが表示されます。
-https://code4fukui.github.io/GTFS/
-
 ## 機能
 - GTFS形式のデータ解析
 - バス停情報の取得
