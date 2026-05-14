@@ -1,10 +1,8 @@
 # GTFS
 
-> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+GTFS (General Transit Feed Specification) オープンデータを扱うためのJavaScriptモジュールです。
 
-A JavaScript module for handling GTFS (General Transit Feed Specification) open data.
-
-## Usage
+## 使い方
 
 ```js
 import { GTFS } from "https://code4fukui.github.io/GTFS/GTFS.js";
@@ -17,10 +15,10 @@ console.log(gtfs.getAgencyName());
 console.log(gtfs.getRoutes());
 ```
 
-## lib
+## ライブラリ
 
 - [gtfs2json](https://github.com/taisukef/gtfs-map/)
 
-## License
+## ライセンス
 
 MIT License
